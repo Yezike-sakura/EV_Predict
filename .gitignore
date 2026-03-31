@@ -1,0 +1,16 @@
+**/__pycache__/
+
+**/.idea/
+
+checkpoints/*
+!/checkpoints/.gitkeep
+
+code-transformer/dataset/UrbanEV/*
+!/code-transformer/dataset/UrbanEV/.gitkeep
+
+result/main_exp/region/*
+!result/main_exp/region/.gitkeep
+
+.SynologyWorkingDirectory
+
+.vscode
