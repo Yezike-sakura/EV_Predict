@@ -236,7 +236,19 @@ def load_net(args, adj, device,occ):
         args.output_dim = 1
         model = AGCRN_Adapter(args).to(device)
 
+    elif args.model.lower() == 'gwnet':
+        from models.GWNET.GWNET_adapter import Model as GWNET_Adapter
+        # 1. 动态对齐真实节点数
+        args.num_nodes = num_node
+        # 2. 对接刚刚算出的精确特征维度账本 (n_fea=5)
+        args.in_dim = n_fea
+        # 3. 对接输出预测步长
+        args.out_dim = args.pred_len
+        # 挂载适配器
+        model = GWNET_Adapter(args).to(device)
+
     return model
+#注册新模型在此添加
 
 
 def create_rnn_data(dataset, lookback, predict_time):

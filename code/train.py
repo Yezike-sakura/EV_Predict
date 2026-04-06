@@ -47,6 +47,10 @@ def training(args, net, optim, loss_func, train_loader, valid_loader, fold):
     previous_lr = optim.param_groups[0]['lr']
     # 👇【新增架构防御】：初始化全局最优验证集 Loss，初始设为正无穷
     best_valid_loss_avg = float('inf')
+    # 👇【新增 1】：初始化早停耐心计数器
+    patience = args.patience
+    patience_counter = 0
+
 
     for epoch in epoch_iterator:
         train_loss_total = 0.0  # 【纯UI修改】：用于累加本轮训练 loss
@@ -116,6 +120,8 @@ def training(args, net, optim, loss_func, train_loader, valid_loader, fold):
         # 只有当本轮的期末整体平均成绩 (valid_loss_avg) 破纪录时，才执行保存！
         if valid_loss_avg < best_valid_loss_avg:
             best_valid_loss_avg = valid_loss_avg
+            # 👇【新增 2】：有下降，计数器清零
+            patience_counter = 0
             output_dir = '../checkpoints/'
             os.makedirs(output_dir, exist_ok=True)
             path = (output_dir + args.model + '_' +
@@ -130,6 +136,9 @@ def training(args, net, optim, loss_func, train_loader, valid_loader, fold):
             # 👇【纯UI修改】：保存最优模型时，使用 write 输出极其清晰的破纪录提示！
             epoch_iterator.write(
                 f"🏆 [Epoch {epoch + 1}] 突破历史最优全局验证集平均 Loss: {best_valid_loss_avg:.4f}，模型已保存！")
+
+        else:
+            patience_counter += 1
 
         # 【触发刹车】：只在调度器存在时才更新学习率
         if scheduler is not None:
@@ -160,6 +169,10 @@ def training(args, net, optim, loss_func, train_loader, valid_loader, fold):
             'Val': f'{valid_loss_avg:.4f}'
         })
 
+# 👇【新增 4】：触发早停机制，跳出整个 epoch 循环
+        if patience_counter >= patience:
+            tqdm.write(f"🛑 [Early Stopping] 验证集连续 {patience} 轮未改善，提前终止训练！")
+            break
 # def training(args, net, optim, loss_func, train_loader, valid_loader, fold):
 #         valid_loss = 1000
 #         net.train()

@@ -45,6 +45,15 @@ if __name__ == "__main__":
         except ImportError as e:
             print(f"Error loading AGCRN args: {e}")
 
+    elif temp_args.model.lower() == 'gwnet':
+        try:
+            # 如果你有专属的参数解析文件，就动态加载；没有则静默跳过
+            from models.GWNET.parse import add_model_specific_args
+
+            parser = add_model_specific_args(parser)
+        except ImportError:
+            pass
+
     # 4. 最终合并生成完美参数表
     args = parser.parse_args()
     # ---------------------------------------------------------

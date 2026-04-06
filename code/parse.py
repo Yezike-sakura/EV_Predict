@@ -20,6 +20,7 @@ def get_global_parser():
     parser.add_argument('--bs', type=int, default=32, help="The batch size of fine-tuning.")
     parser.add_argument('--epoch', type=int, default=20, help="The max epoch of the training process.")
     # 在 【全局训练控制】 下方添加
+    parser.add_argument('--patience', type=int, default=15, help="Early stopping patience.")
     parser.add_argument('--learning_rate', type=float, default=0.001, help='optimizer learning rate')
     parser.add_argument('--lradj', type=str, default='None', help='adjust learning rate (e.g., type1, step, None)')
 

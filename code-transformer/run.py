@@ -23,6 +23,21 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, default='TimeXer',
                         help='model name, options: [TimeXer, TimesNet]')
 
+    # [新增适配 DLinear]：是否为每个变量（Channel）分配独立的线性权重
+    parser.add_argument('--individual', action='store_true', default=False,
+                        help='DLinear: a linear layer for each variate(channel) individually')
+
+    # [新增适配 PatchTST]：核心分块与归一化参数
+    parser.add_argument('--stride', type=int, default=8, help='stride of PatchTST')
+    parser.add_argument('--padding_patch', default='end', help='None: None; end: padding on the end')
+    parser.add_argument('--revin', type=int, default=1, help='RevIN; True 1 False 0')
+    parser.add_argument('--affine', type=int, default=0, help='RevIN-affine; True 1 False 0')
+    parser.add_argument('--subtract_last', type=int, default=0, help='0: subtract mean; 1: subtract last')
+    parser.add_argument('--decomposition', type=int, default=0, help='decomposition; True 1 False 0')
+    parser.add_argument('--kernel_size', type=int, default=25, help='decomposition-kernel')
+    parser.add_argument('--head_dropout', type=float, default=0.0, help='head dropout')
+    parser.add_argument('--fc_dropout', type=float, default=0.0, help='fully connected dropout')
+
     # data loader
     parser.add_argument('--data', type=str, default='custom', help='dataset type')
     parser.add_argument('--root_path', type=str, default='./dataset/UrbanEV/', help='root path of the data file')

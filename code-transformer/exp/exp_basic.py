@@ -1,6 +1,8 @@
 import os
 import torch
-from models import TimesNet,TimeXer
+from models import TimesNet, TimeXer
+from models.DLinear import DLinear_adapter as DLinear
+from models.PatchTST import PatchTST_adapter as PatchTST
 
 
 class Exp_Basic(object):
@@ -8,7 +10,9 @@ class Exp_Basic(object):
         self.args = args
         self.model_dict = {
             'TimesNet': TimesNet,
-            'TimeXer': TimeXer
+            'TimeXer': TimeXer,
+            'DLinear': DLinear,
+            'PatchTST': PatchTST
         }
         if args.model == 'Mamba':
             print('Please make sure you have successfully installed mamba_ssm')
