@@ -10,17 +10,27 @@ plt.switch_backend('agg')
 
 
 def adjust_learning_rate(optimizer, epoch, args):
-    # lr = args.learning_rate * (0.2 ** (epoch // 2))
+    # Safer schedule defaults for stability on long-horizon forecasting.
+    lr_adjust = {}
+    min_lr = float(getattr(args, 'min_lr', 1e-6))
+
     if args.lradj == 'type1':
-        lr_adjust = {epoch: args.learning_rate * (0.5 ** ((epoch - 1) // 1))}
+        # Legacy type1 was halving every epoch and often froze training too early.
+        # Keep the name for compatibility but decay every 5 epochs with lr floor.
+        lr = args.learning_rate * (0.5 ** ((epoch - 1) // 5))
+        lr_adjust = {epoch: max(min_lr, lr)}
     elif args.lradj == 'type2':
         lr_adjust = {
             2: 5e-5, 4: 1e-5, 6: 5e-6, 8: 1e-6,
             10: 5e-7, 15: 1e-7, 20: 5e-8
         }
     elif args.lradj == "cosine":
-        lr_adjust = {epoch: args.learning_rate /2 * (1 + math.cos(epoch / args.epoch * math.pi))}
-    if epoch in lr_adjust.keys():
+        # Cosine annealing from base_lr to min_lr.
+        cosine = 0.5 * (1 + math.cos(epoch / args.epoch * math.pi))
+        lr = min_lr + (args.learning_rate - min_lr) * cosine
+        lr_adjust = {epoch: lr}
+
+    if epoch in lr_adjust:
         lr = lr_adjust[epoch]
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr

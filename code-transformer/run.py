@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # basic config list
     parser.add_argument('--is_training', type=int, default=1, help='status')
     parser.add_argument('--model', type=str, default='TimeXer',
-                        help='model name, options: [TimeXer, TimesNet]')
+                        help='model name, options: [TimeXer, TimesNet, DLinear, PatchTST, DyGraphPatchFormer]')
 
     # [新增适配 DLinear]：是否为每个变量（Channel）分配独立的线性权重
     parser.add_argument('--individual', action='store_true', default=False,
@@ -84,7 +84,8 @@ if __name__ == '__main__':
     parser.add_argument('--patience', type=int, default=50, help='early stopping patience')
     parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
     parser.add_argument('--loss', type=str, default='MSE', help='loss function')
-    parser.add_argument('--lradj', type=str, default='type1', help='adjust learning rate')
+    parser.add_argument('--lradj', type=str, default='cosine', help='adjust learning rate')
+    parser.add_argument('--min_lr', type=float, default=1e-6, help='minimum learning rate for scheduler')
     parser.add_argument('--use_amp', action='store_true', help='use automatic mixed precision training', default=False)
 
     # GPU
@@ -104,6 +105,18 @@ if __name__ == '__main__':
 
     # TimeXer
     parser.add_argument('--patch_len', type=int, default=12, help='patch length')
+    # DyGraphPatchFormer
+    parser.add_argument('--static_adj_path', type=str, default='../data/adj.csv', help='static adjacency csv path')
+    parser.add_argument('--graph_hidden_dim', type=int, default=64, help='hidden dim for dynamic graph generator')
+    parser.add_argument('--lambda_init', type=float, default=0.1, help='initial lambda in residual hybrid graph')
+    parser.add_argument('--graph_norm', type=str, default='row', choices=['row', 'sym', 'none'],
+                        help='normalization mode for generated graph')
+    parser.add_argument('--sym_graph', action='store_true', default=False, help='enforce symmetric dynamic graph')
+    parser.add_argument('--graph_nonneg_mode', type=str, default='relu', choices=['relu', 'softplus'],
+                        help='non-negative projection mode for graph')
+    parser.add_argument('--graph_mark_dim', type=int, default=4, help='mark feature dim consumed by graph generator')
+    parser.add_argument('--graph_eps', type=float, default=1e-6, help='epsilon for graph numeric stability')
+    parser.add_argument('--num_nodes', type=int, default=275, help='number of graph nodes')
 
     #exp_setting
     parser.add_argument('--pred_len', type=int, default=3, help='prediction sequence length')
@@ -144,6 +157,8 @@ if __name__ == '__main__':
             args.dec_in = 1
             args.c_out = 1
             args.data_path = f'{args.feat}-{args.add_feat}_node-{args.pred_type}.csv'
+
+    args.num_nodes = args.c_out
 
     if args.is_training:
         exp = Exp(args)

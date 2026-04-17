@@ -53,6 +53,13 @@ if __name__ == "__main__":
             parser = add_model_specific_args(parser)
         except ImportError:
             pass
+    elif temp_args.model.lower() == 'dygraph_patchformer':
+        try:
+            from models.DyGraphPatchFormer.parse import add_model_specific_args
+
+            parser = add_model_specific_args(parser)
+        except ImportError as e:
+            print(f"Error loading DyGraphPatchFormer args: {e}")
 
     # 4. 最终合并生成完美参数表
     args = parser.parse_args()

@@ -1,6 +1,6 @@
 import os
 import torch
-from models import TimesNet, TimeXer
+from models import TimesNet, TimeXer, DyGraphPatchFormer
 from models.DLinear import DLinear_adapter as DLinear
 from models.PatchTST import PatchTST_adapter as PatchTST
 
@@ -12,7 +12,8 @@ class Exp_Basic(object):
             'TimesNet': TimesNet,
             'TimeXer': TimeXer,
             'DLinear': DLinear,
-            'PatchTST': PatchTST
+            'PatchTST': PatchTST,
+            'DyGraphPatchFormer': DyGraphPatchFormer
         }
         if args.model == 'Mamba':
             print('Please make sure you have successfully installed mamba_ssm')

@@ -247,6 +247,12 @@ def load_net(args, adj, device,occ):
         # 挂载适配器
         model = GWNET_Adapter(args).to(device)
 
+    elif args.model.lower() == 'dygraph_patchformer':
+        from models.DyGraphPatchFormer.dygraph_adapter import DyGraphPatchFormerAdapter
+
+        args.num_nodes = num_node
+        model = DyGraphPatchFormerAdapter(args, adj_dense).to(device)
+
     return model
 #注册新模型在此添加
 
