@@ -30,7 +30,7 @@ def print_args(args):
     print("\033[1m" + "Run Parameters" + "\033[0m")
     print(f'  {"Train Epochs:":<20}{args.epoch:<20}{"Batch Size:":<20}{args.batch_size:<20}')
     print(f'  {"Patience:":<20}{args.patience:<20}{"Learning Rate:":<20}{args.learning_rate:<20}')
-    print(f'  {"Loss:":<20}{args.loss:<20}')
+    print(f'  {"Loss:":<20}{args.loss:<20}{"Min LR:":<20}{getattr(args, "min_lr", "N/A"):<20}')
     print(f'  {"Lradj:":<20}{args.lradj:<20}{"Use Amp:":<20}{args.use_amp:<20}')
     print()
 
@@ -42,4 +42,12 @@ def print_args(args):
     print("\033[1m" + "De-stationary Projector Params" + "\033[0m")
     p_hidden_dims_str = ', '.join(map(str, args.p_hidden_dims))
     print(f'  {"P Hidden Dims:":<20}{p_hidden_dims_str:<20}{"P Hidden Layers:":<20}{args.p_hidden_layers:<20}') 
+    print()
+
+    print("\033[1m" + "DyGraph Config" + "\033[0m")
+    print(f'  {"Static Adj Path:":<20}{getattr(args, "static_adj_path", "N/A"):<20}')
+    print(f'  {"Graph Hidden:":<20}{getattr(args, "graph_hidden_dim", "N/A"):<20}{"Lambda Init:":<20}{getattr(args, "lambda_init", "N/A"):<20}')
+    print(f'  {"Graph Norm:":<20}{getattr(args, "graph_norm", "N/A"):<20}{"Sym Graph:":<20}{getattr(args, "sym_graph", "N/A"):<20}')
+    print(f'  {"Nonneg Mode:":<20}{getattr(args, "graph_nonneg_mode", "N/A"):<20}{"Graph Mark Dim:":<20}{getattr(args, "graph_mark_dim", "N/A"):<20}')
+    print(f'  {"Graph Eps:":<20}{getattr(args, "graph_eps", "N/A"):<20}{"Num Nodes:":<20}{getattr(args, "num_nodes", "N/A"):<20}')
     print()
